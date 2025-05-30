@@ -46,6 +46,11 @@ public class OdontologoServiceImpl implements OdontologoService{
     }
 
     @Override
+    public Optional<Odontologo> buscarPorUsuarioId(Long idUsuario) {
+        return odontologoRepository.buscarPorUsuarioId(idUsuario);
+    }
+
+    @Override
     public List<Turno> turnosPorOdontologo(Long idOdontologo) throws Exception {
         return turnoRepository.porOdontologo(idOdontologo);
     }
