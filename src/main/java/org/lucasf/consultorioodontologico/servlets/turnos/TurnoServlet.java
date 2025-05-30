@@ -58,7 +58,7 @@ public class TurnoServlet extends HttpServlet {
             List<Turno> turnosFuturos = todosLosTurnos.stream()
                     .filter(t -> {
                         LocalDateTime fechaHora = LocalDateTime.of(t.getFechaTurno(), t.getHoraTurno());
-                        return fechaHora.isAfter(ahora);
+                        return !fechaHora.isBefore(ahora);
                     })
                     .sorted(Comparator.comparing(Turno::getFechaTurno).thenComparing(Turno::getHoraTurno))
                     .collect(Collectors.toList());
