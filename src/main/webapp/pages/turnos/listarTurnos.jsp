@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ include file="../../components/header.jsp" %>
 <%@ page import="org.lucasf.consultorioodontologico.models.entities.Usuario" %>
-<%@ page import="org.lucasf.consultorioodontologico.models.enums.Rol" %>
+<%@ page import="org.lucasf.consultorioodontologico.models.Rol" %>
 <body id="page-top">
 
 <!-- Page Wrapper -->

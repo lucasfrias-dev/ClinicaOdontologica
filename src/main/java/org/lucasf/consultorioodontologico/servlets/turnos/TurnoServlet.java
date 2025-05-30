@@ -15,8 +15,11 @@ import org.lucasf.consultorioodontologico.services.TurnoService;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @WebServlet("/turnos")
 public class TurnoServlet extends HttpServlet {
@@ -50,17 +53,23 @@ public class TurnoServlet extends HttpServlet {
                 todosLosTurnos = turnoService.listar();
             }
 
-            List<Turno> turnosFuturos = new ArrayList<>();
-            List<Turno> turnosPasados = new ArrayList<>();
-            LocalDate hoy = LocalDate.now();
+            LocalDateTime ahora = LocalDateTime.now();
 
-            for (Turno turno : todosLosTurnos) {
-                if (turno.getFechaTurno().isAfter(hoy) || turno.getFechaTurno().isEqual(hoy)) {
-                    turnosFuturos.add(turno);
-                } else {
-                    turnosPasados.add(turno);
-                }
-            }
+            List<Turno> turnosFuturos = todosLosTurnos.stream()
+                    .filter(t -> {
+                        LocalDateTime fechaHora = LocalDateTime.of(t.getFechaTurno(), t.getHoraTurno());
+                        return fechaHora.isAfter(ahora);
+                    })
+                    .sorted(Comparator.comparing(Turno::getFechaTurno).thenComparing(Turno::getHoraTurno))
+                    .collect(Collectors.toList());
+
+            List<Turno> turnosPasados = todosLosTurnos.stream()
+                    .filter(t -> {
+                        LocalDateTime fechaHora = LocalDateTime.of(t.getFechaTurno(), t.getHoraTurno());
+                        return fechaHora.isBefore(ahora);
+                    })
+                    .sorted(Comparator.comparing(Turno::getFechaTurno).thenComparing(Turno::getHoraTurno).reversed())
+                    .collect(Collectors.toList());
 
             req.setAttribute("turnosFuturos", turnosFuturos);
             req.setAttribute("turnosPasados", turnosPasados);
