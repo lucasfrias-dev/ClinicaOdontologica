@@ -7,19 +7,26 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.lucasf.consultorioodontologico.models.Rol;
 import org.lucasf.consultorioodontologico.models.entities.Odontologo;
 import org.lucasf.consultorioodontologico.models.entities.Paciente;
 import org.lucasf.consultorioodontologico.models.entities.Usuario;
+import org.lucasf.consultorioodontologico.services.OdontologoService;
 import org.lucasf.consultorioodontologico.services.PacienteService;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @WebServlet("/pacientes")
 public class PacienteServlet extends HttpServlet {
 
     @Inject
     private PacienteService pacienteService;
+
+    @Inject
+    private OdontologoService odontologoService;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -35,15 +42,24 @@ public class PacienteServlet extends HttpServlet {
         session.removeAttribute("mensajeExito");
         session.removeAttribute("mensajeError");
 
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
         try {
-            Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
-
             List<Paciente> pacientes;
-            if (usuario != null && usuario.getRol().equals("ODONTOLOGO")) {
-                // Suponiendo que odontólogo está relacionado con usuario
-                pacientes = pacienteService.buscarPorOdontologo(usuario.getIdUsuario());
+            if (usuario != null && usuario.getRol() == Rol.ODONTOLOGO) {
+                Optional<Odontologo> optionalOdontologo = odontologoService.buscarPorUsuarioId(usuario.getIdUsuario());
+
+                if (optionalOdontologo.isPresent()) {
+                    Odontologo odontologo = optionalOdontologo.get();
+                    System.out.println("Odontólogo encontrado: " + odontologo.getNombre() + " " + odontologo.getApellido());
+                    pacientes = pacienteService.buscarPorOdontologo(odontologo.getId());
+                    System.out.println("Pacientes asociados al odontólogo: " + pacientes.size());
+                } else {
+                    pacientes = new ArrayList<>(); // o podrías lanzar una excepción o redirigir
+                    req.setAttribute("mensajeError", "No se encontró el odontólogo asociado al usuario.");
+                }
             } else {
                 pacientes = pacienteService.listar(); // Admin o secretario
+                System.out.println("Listado de pacientes para admin o secretario: " + pacientes.size());
             }
 
             req.setAttribute("pacientes", pacientes);

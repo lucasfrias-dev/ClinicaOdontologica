@@ -42,9 +42,10 @@ public class PacienteRepositoryImpl extends PersonaRepositoryImpl<Paciente> impl
         SELECT DISTINCT t.paciente
         FROM turnos t
         WHERE t.odontologo.id = :odontologoId
-        """, Paciente.class)
+    """, Paciente.class)
                 .setParameter("odontologoId", odontologoId)
                 .getResultList();
     }
+
 
 }
