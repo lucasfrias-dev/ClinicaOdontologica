@@ -1,31 +1,21 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    // Obtener el usuario logueado de la sesión
-    Object usuarioObj = session.getAttribute("usuario");
     String nombreUsuario = "Invitado";
     String rol = "Sin rol";
 
-    if (usuarioObj != null && usuarioObj instanceof org.lucasf.consultorioodontologico.models.entities.Usuario) {
-        org.lucasf.consultorioodontologico.models.entities.Usuario usuario =
-                (org.lucasf.consultorioodontologico.models.entities.Usuario) usuarioObj;
-
+    Object usuarioObj = session.getAttribute("usuario");
+    if (usuarioObj instanceof org.lucasf.consultorioodontologico.models.entities.Usuario usuario) {
         nombreUsuario = usuario.getNombreUsuario();
 
-        switch (usuario.getRol()) {
-            case ADMIN:
-                rol = "Administrador";
-                break;
-            case SECRETARIO:
-                rol = "Secretario";
-                break;
-            case ODONTOLOGO:
-                rol = "Odontólogo";
-                break;
-            default:
-                rol = "Usuario";
-        }
+        rol = switch (usuario.getRol()) {
+            case ADMIN -> "Administrador";
+            case SECRETARIO -> "Secretario";
+            case ODONTOLOGO -> "Odontólogo";
+            default -> "Usuario";
+        };
     }
 %>
+
 
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
