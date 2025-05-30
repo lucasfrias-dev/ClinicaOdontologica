@@ -23,7 +23,7 @@ public class TurnoRepositoryImpl implements TurnoRepository{
 
     @Override
     public List<Turno> porOdontologo(Long odontologoId) {
-        return em.createQuery("select t from turnos t where t.odontologo.id = :odontologoId", Turno.class)
+        return em.createQuery("select t from turnos t where t.odontologo.usuario.id = :odontologoId", Turno.class)
                 .setParameter("odontologoId", odontologoId)
                 .getResultList();
     }

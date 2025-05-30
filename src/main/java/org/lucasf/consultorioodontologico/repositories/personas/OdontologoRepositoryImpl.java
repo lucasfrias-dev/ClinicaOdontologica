@@ -6,6 +6,7 @@ import org.lucasf.consultorioodontologico.configs.Repository;
 import org.lucasf.consultorioodontologico.models.entities.Odontologo;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class OdontologoRepositoryImpl extends PersonaRepositoryImpl<Odontologo> implements OdontologoRepository{
@@ -27,5 +28,13 @@ public class OdontologoRepositoryImpl extends PersonaRepositoryImpl<Odontologo> 
         return em.createQuery("select o from odontologos o where o.especialidad = :especialidad", Odontologo.class)
                 .setParameter("especialidad", especialidad)
                 .getResultList();
+    }
+
+    @Override
+    public Optional<Odontologo> buscarPorUsuarioId(Long idUsuario) {
+        return em.createQuery("select o from odontologos o where o.usuario.id = :idUsuario", Odontologo.class)
+                .setParameter("idUsuario", idUsuario)
+                .getResultStream()
+                .findFirst();
     }
 }
