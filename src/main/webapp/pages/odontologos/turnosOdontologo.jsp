@@ -21,7 +21,8 @@
 
                 <%
                     Odontologo odontologo = (Odontologo) request.getAttribute("odontologo");
-                    List<Turno> turnos = (List<Turno>) request.getAttribute("turnos");
+                    List<Turno> turnosFuturos = (List<Turno>) request.getAttribute("turnosFuturos");
+                    List<Turno> turnosPasados = (List<Turno>) request.getAttribute("turnosPasados");
                     DateTimeFormatter fechaFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                     DateTimeFormatter horaFormatter = DateTimeFormatter.ofPattern("HH:mm");
                 %>
@@ -31,13 +32,14 @@
                     <strong><%= odontologo.getNombre() %> <%= odontologo.getApellido() %></strong>.
                 </p>
 
+                <!-- Turnos Futuros -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Turnos asignados</h6>
+                        <h6 class="m-0 font-weight-bold text-success">Turnos Futuros</h6>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <table class="table table-bordered dataTableTurnos" width="100%" cellspacing="0">
                                 <thead>
                                 <tr>
                                     <th>Fecha</th>
@@ -46,22 +48,14 @@
                                     <th>Paciente</th>
                                 </tr>
                                 </thead>
-                                <tfoot>
-                                <tr>
-                                    <th>Fecha</th>
-                                    <th>Hora</th>
-                                    <th>Afección</th>
-                                    <th>Paciente</th>
-                                </tr>
-                                </tfoot>
                                 <tbody>
                                 <%
-                                    if (turnos != null && !turnos.isEmpty()) {
-                                        for (Turno turno : turnos) {
+                                    if (turnosFuturos != null && !turnosFuturos.isEmpty()) {
+                                        for (Turno turno : turnosFuturos) {
                                 %>
                                 <tr>
-                                    <td><%= turno.getFechaTurno() != null ? turno.getFechaTurno().format(fechaFormatter) : "" %></td>
-                                    <td><%= turno.getHoraTurno() != null ? turno.getHoraTurno().format(horaFormatter) : "" %></td>
+                                    <td><%= turno.getFechaTurno().format(fechaFormatter) %></td>
+                                    <td><%= turno.getHoraTurno().format(horaFormatter) %></td>
                                     <td><%= turno.getAfeccion() != null ? turno.getAfeccion() : "No especificada" %></td>
                                     <td><%= turno.getPaciente() != null ? turno.getPaciente().getNombre() + " " + turno.getPaciente().getApellido() : "No asignado" %></td>
                                 </tr>
@@ -70,7 +64,48 @@
                                 } else {
                                 %>
                                 <tr>
-                                    <td colspan="4" class="text-center">No hay turnos asignados.</td>
+                                    <td colspan="4" class="text-center">No hay turnos futuros.</td>
+                                </tr>
+                                <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Turnos Pasados -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-secondary">Turnos Pasados</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered dataTableTurnos" width="100%" cellspacing="0">
+                                <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Afección</th>
+                                    <th>Paciente</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <%
+                                    if (turnosPasados != null && !turnosPasados.isEmpty()) {
+                                        for (Turno turno : turnosPasados) {
+                                %>
+                                <tr>
+                                    <td><%= turno.getFechaTurno().format(fechaFormatter) %></td>
+                                    <td><%= turno.getHoraTurno().format(horaFormatter) %></td>
+                                    <td><%= turno.getAfeccion() != null ? turno.getAfeccion() : "No especificada" %></td>
+                                    <td><%= turno.getPaciente() != null ? turno.getPaciente().getNombre() + " " + turno.getPaciente().getApellido() : "No asignado" %></td>
+                                </tr>
+                                <%
+                                    }
+                                } else {
+                                %>
+                                <tr>
+                                    <td colspan="4" class="text-center">No hay turnos pasados.</td>
                                 </tr>
                                 <% } %>
                                 </tbody>
@@ -81,6 +116,7 @@
                         </a>
                     </div>
                 </div>
+
 
             </div>
         </div>
